@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>:root{color-scheme:light}html,body{height:100%}body{margin:0}[hidden]{display:none!important}</style>
+<title>on_time_swiss</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap">
+<style>
+/* Layout: Material 3 app shell. Navigation rail (>=840px) or bottom bar; one content column with tonal cards. Seed: Swiss red. */
+:root{
+  --primary:#B7131A; --on-primary:#FFFFFF; --primary-container:#FFDAD5; --on-primary-container:#410002;
+  --secondary-container:#FFDAD5; --on-secondary-container:#2C1512;
+  --surface:#FFF8F7; --surface-1:#FBEFED; --surface-2:#F7E9E6; --surface-3:#F2E3E0;
+  --on-surface:#231918; --on-surface-var:#534341; --outline:#857370; --outline-var:#D8C2BF;
+  --ok:#17653A; --ok-c:#B6F1C4; --on-ok-c:#00210E;
+  --warn:#8A5100; --warn-c:#FFDDB3; --on-warn-c:#2B1700;
+  --err:#BA1A1A; --err-c:#FFDAD6; --on-err-c:#410002;
+  --font:'Roboto',system-ui,-apple-system,'Segoe UI',sans-serif; --mono:'Roboto Mono',ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --primary:#FFB4A9; --on-primary:#690005; --primary-container:#93000A; --on-primary-container:#FFDAD5;
+  --secondary-container:#5C3F3B; --on-secondary-container:#FFDAD5;
+  --surface:#1A1110; --surface-1:#231918; --surface-2:#271D1C; --surface-3:#322826;
+  --on-surface:#F1DEDC; --on-surface-var:#D8C2BF; --outline:#A08C8A; --outline-var:#534341;
+  --ok:#7ADB97; --ok-c:#00522A; --on-ok-c:#B6F1C4;
+  --warn:#FFB95C; --warn-c:#664000; --on-warn-c:#FFDDB3;
+  --err:#FFB4AB; --err-c:#93000A; --on-err-c:#FFDAD6; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --primary:#FFB4A9; --on-primary:#690005; --primary-container:#93000A; --on-primary-container:#FFDAD5;
+  --secondary-container:#5C3F3B; --on-secondary-container:#FFDAD5;
+  --surface:#1A1110; --surface-1:#231918; --surface-2:#271D1C; --surface-3:#322826;
+  --on-surface:#F1DEDC; --on-surface-var:#D8C2BF; --outline:#A08C8A; --outline-var:#534341;
+  --ok:#7ADB97; --ok-c:#00522A; --on-ok-c:#B6F1C4;
+  --warn:#FFB95C; --warn-c:#664000; --on-warn-c:#FFDDB3;
+  --err:#FFB4AB; --err-c:#93000A; --on-err-c:#FFDAD6; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--surface);color:var(--on-surface);font-family:var(--font);font-size:14px;line-height:1.43;letter-spacing:.016em}
+.ms{font-family:'Material Symbols Outlined';font-weight:400;font-style:normal;font-size:24px;line-height:1;display:inline-block;width:1em;height:1em;overflow:hidden;white-space:nowrap;letter-spacing:normal;text-transform:none;-webkit-font-feature-settings:'liga';font-feature-settings:'liga';vertical-align:middle;flex:none}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+
+.shell{display:grid;grid-template-columns:minmax(0,1fr);min-height:100%;padding-bottom:80px}
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:20;display:flex;justify-content:space-around;background:var(--surface-2);padding:12px 8px calc(16px + env(safe-area-inset-bottom,0px));gap:4px}
+.nav button{border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;min-width:0;color:var(--on-surface-var);font-size:12px;font-weight:500;letter-spacing:.04em}
+.nav .pill{display:grid;place-items:center;width:64px;height:32px;border-radius:16px;transition:background .2s}
+.nav button[aria-selected="true"]{color:var(--on-surface)}
+.nav button[aria-selected="true"] .pill{background:var(--secondary-container);color:var(--on-secondary-container)}
+
+.main{min-width:0;padding:0 16px 24px;max-width:1000px;width:100%;margin-inline:auto}
+.appbar{display:flex;align-items:center;gap:12px;padding-block:20px 8px}
+.logo{width:40px;height:40px;border-radius:12px;background:var(--primary);color:var(--on-primary);display:grid;place-items:center;flex:none}
+.appbar h1{margin:0;font-size:22px;line-height:28px;font-weight:400;letter-spacing:0}
+.appbar p{margin:0;color:var(--on-surface-var);font-size:12px}
+.grow{flex:1;min-width:0}
+.icon-btn{width:40px;height:40px;border-radius:20px;border:0;background:none;display:grid;place-items:center;color:var(--on-surface-var)}
+.icon-btn:hover{background:var(--surface-3)}
+
+.banner{display:flex;gap:12px;align-items:center;border-radius:12px;padding:12px 16px;margin-block:8px;background:var(--surface-3);color:var(--on-surface-var);font-size:13px}
+.banner.err{background:var(--warn-c);color:var(--on-warn-c)}
+h2{font-size:16px;line-height:24px;font-weight:500;margin:0;letter-spacing:.009em}
+.label{font-size:12px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--on-surface-var)}
+
+.tf{position:relative;min-width:0}
+.tf input,.tf select{width:100%;height:56px;border-radius:4px;border:1px solid var(--outline);background:transparent;padding:16px 16px 0 16px;font-size:16px;appearance:none;-webkit-appearance:none}
+.tf.lead input{padding-left:48px}
+.tf.lead>.ms.pre{position:absolute;left:12px;top:16px;color:var(--on-surface-var)}
+.tf label{position:absolute;left:16px;top:6px;font-size:12px;color:var(--on-surface-var);pointer-events:none;letter-spacing:.03em}
+.tf.lead label{left:48px}
+.tf input:focus,.tf select:focus{outline:0;border:2px solid var(--primary);padding:15px 15px 0 15px}
+.tf.lead input:focus{padding-left:47px}
+.tf:focus-within label{color:var(--primary)}
+.menu{position:absolute;left:0;right:0;top:60px;z-index:10;background:var(--surface-3);border-radius:4px;padding:8px 0;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+.menu button{display:flex;gap:16px;align-items:center;width:100%;text-align:left;border:0;background:none;height:48px;padding:0 16px;font-size:16px}
+.menu button:hover,.menu button:focus-visible{background:var(--outline-var)}
+.menu .ms{color:var(--on-surface-var)}
+
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 12px;border-radius:8px;border:1px solid var(--outline);background:none;font-size:14px;font-weight:500;letter-spacing:.01em}
+.chip .ms{font-size:18px}
+.chip[aria-pressed="true"]{background:var(--secondary-container);color:var(--on-secondary-container);border-color:transparent}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:40px;padding:0 24px;border-radius:20px;border:0;font-weight:500;letter-spacing:.01em}
+.btn.filled{background:var(--primary);color:var(--on-primary)}
+.btn.tonal{background:var(--secondary-container);color:var(--on-secondary-container)}
+.btn .ms{font-size:18px}
+
+.card{background:var(--surface-1);border-radius:12px;padding:16px}
+.card.outlined{background:var(--surface);border:1px solid var(--outline-var)}
+.stack{display:flex;flex-direction:column;gap:12px}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.search-row{display:grid;gap:12px;grid-template-columns:minmax(0,1fr)}
+.toolbar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+
+.tiles{display:grid;gap:12px;grid-template-columns:repeat(2,minmax(0,1fr))}
+.tile{border-radius:12px;padding:12px 16px;background:var(--surface-2)}
+.tile .v{font-size:28px;line-height:36px;font-weight:400;font-variant-numeric:tabular-nums;letter-spacing:0}
+.tile .v small{font-size:14px;color:var(--on-surface-var);margin-left:2px}
+.tile.accent{background:var(--primary-container);color:var(--on-primary-container)}
+.tile.accent .label,.tile.accent .v small{color:inherit}
+
+.board{background:var(--surface-1);border-radius:12px;overflow:hidden}
+.dep{display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:4px 12px;align-items:center;padding:10px 16px;border-top:1px solid var(--outline-var)}
+.dep:first-child{border-top:0}
+.line{display:grid;place-items:center;height:32px;border-radius:8px;background:var(--surface-3);font-family:var(--mono);font-size:13px;font-weight:500;white-space:nowrap}
+.line.train{background:var(--primary);color:var(--on-primary)}
+.dest{font-size:16px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sub{color:var(--on-surface-var);font-size:12px;display:flex;gap:8px;flex-wrap:wrap;font-variant-numeric:tabular-nums}
+.time{text-align:right;font-variant-numeric:tabular-nums;display:flex;flex-direction:column;align-items:flex-end;gap:2px}
+.time b{font-size:16px;font-weight:500}
+.status{display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:8px;font-size:12px;font-weight:500;white-space:nowrap}
+.s-ok{background:var(--ok-c);color:var(--on-ok-c)}
+.s-warn{background:var(--warn-c);color:var(--on-warn-c)}
+.s-err{background:var(--err-c);color:var(--on-err-c)}
+.s-none{background:var(--surface-3);color:var(--on-surface-var)}
+.status .ms{font-size:14px}
+.cancelled .dest,.cancelled .time b{text-decoration:line-through;color:var(--on-surface-var)}
+
+.conn{background:var(--surface-1);border-radius:12px;overflow:hidden}
+.conn-head{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 12px;width:100%;text-align:left;border:0;background:none;padding:16px;align-items:center}
+.conn-times{font-size:22px;line-height:28px;font-variant-numeric:tabular-nums;letter-spacing:0}
+.conn-times .arrow{color:var(--on-surface-var);margin-inline:6px;font-size:18px}
+.conn-meta{display:flex;gap:6px 16px;flex-wrap:wrap;color:var(--on-surface-var);font-size:13px;font-variant-numeric:tabular-nums}
+.chev{transition:transform .2s;color:var(--on-surface-var)}
+.conn.open .chev{transform:rotate(180deg)}
+.conn-body{padding:0 16px 16px;display:flex;flex-direction:column}
+.leg{display:grid;grid-template-columns:52px 14px minmax(0,1fr);gap:0 12px}
+.leg .t{text-align:right;font-variant-numeric:tabular-nums;font-size:13px;padding-top:0}
+.leg .t span{display:block;color:var(--on-surface-var);font-size:12px;min-height:18px}
+.leg .rail{position:relative}
+.leg .rail::before{content:"";position:absolute;left:6px;top:8px;bottom:-30px;width:2px;background:var(--primary)}
+.leg .rail i{position:absolute;left:1px;top:3px;width:12px;height:12px;border-radius:50%;border:2px solid var(--primary);background:var(--surface-1)}
+.leg.end .rail::before{display:none}
+.leg.end .rail i{background:var(--primary)}
+.leg .what{padding-bottom:24px;min-width:0}
+.leg.end .what{padding-bottom:0}
+.leg .what b{font-weight:500}
+.leg.end .what{padding-bottom:4px}
+.xfer{margin:4px 0 12px 64px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:8px 12px;border-radius:8px;font-size:13px}
+.xfer .ms{font-size:18px}
+.alt{margin-top:8px;padding:12px;border-radius:8px;background:var(--surface-3);display:flex;gap:12px;align-items:center;font-size:13px;flex-wrap:wrap}
+
+.bar-row{display:grid;grid-template-columns:96px minmax(0,1fr) 128px;gap:12px;align-items:center;padding-block:8px}
+.bar{height:8px;border-radius:4px;background:var(--surface-3);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:4px;background:var(--primary)}
+.bar-row .n{text-align:right;font-variant-numeric:tabular-nums;font-size:13px;color:var(--on-surface-var)}
+.tbl-wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums;font-size:13px}
+th,td{text-align:left;padding:8px 12px 8px 0;border-bottom:1px solid var(--outline-var);white-space:nowrap}
+th{font-weight:500;color:var(--on-surface-var)}
+.switch{display:inline-flex;align-items:center;gap:12px;background:none;border:0;padding:0}
+.switch .track{width:52px;height:32px;border-radius:16px;border:2px solid var(--outline);background:var(--surface-3);position:relative;transition:.2s;flex:none}
+.switch .track::after{content:"";position:absolute;top:6px;left:6px;width:16px;height:16px;border-radius:50%;background:var(--outline);transition:.2s}
+.switch[aria-checked="true"] .track{background:var(--primary);border-color:var(--primary)}
+.switch[aria-checked="true"] .track::after{left:24px;top:2px;width:24px;height:24px;background:var(--on-primary)}
+.foot{color:var(--on-surface-var);font-size:12px;margin:0}
+section[hidden]{display:none}
+
+@media (min-width:600px){
+  .search-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr) 180px}
+  .search-row.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .tiles{grid-template-columns:repeat(4,minmax(0,1fr))}
+}
+@media (min-width:840px){
+  .shell{grid-template-columns:96px minmax(0,1fr);padding-bottom:0}
+  .nav{position:sticky;top:0;height:100vh;height:100dvh;flex-direction:column;justify-content:flex-start;align-items:center;padding:40px 0 16px;gap:12px;background:var(--surface)}
+  .nav button{flex:none;width:80px}
+  .main{padding-inline:24px}
+}
+@media (max-width:480px){
+  .bar-row{grid-template-columns:72px minmax(0,1fr) 100px;gap:8px}
+  .dep{padding-inline:12px;grid-template-columns:56px minmax(0,1fr) auto}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+</head>
+<body>
+<div class="shell">
+  <nav class="nav" role="tablist" aria-label="Hauptnavigation">
+    <button role="tab" aria-selected="true" data-tab="board"><span class="pill"><span class="ms">departure_board</span></span>Abfahrten</button>
+    <button role="tab" aria-selected="false" data-tab="conn"><span class="pill"><span class="ms">alt_route</span></span>Verbindungen</button>
+    <button role="tab" aria-selected="false" data-tab="stats"><span class="pill"><span class="ms">insights</span></span>Statistik</button>
+  </nav>
+
+  <main class="main">
+    <header class="appbar">
+      <div class="logo"><span class="ms">train</span></div>
+      <div class="grow"><h1>on_time_swiss</h1><p>Wie pünktlich ist der öffentliche Verkehr?</p></div>
+      <button class="icon-btn" id="refresh" aria-label="Jetzt aktualisieren"><span class="ms">sync</span></button>
+    </header>
+
+    <div class="banner" id="info"><span class="ms">info</span><span>Mockup mit Beispieldaten. Die Live-Anbindung an transport.opendata.ch ist hier nicht aktiv.</span></div>
+    <div class="banner err" id="offline" hidden><span class="ms">cloud_off</span><span>Keine Verbindung zur API. Angezeigt werden Daten aus dem Cache, Stand vor 3 Min.</span></div>
+
+    <section id="board" class="stack" aria-label="Abfahrtstafel">
+      <div class="tf lead" id="stationField">
+        <span class="ms pre">search</span>
+        <label for="station">Station</label>
+        <input id="station" value="Bern" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="menu">
+        <div class="menu" id="menu" role="listbox" hidden></div>
+      </div>
+      <div class="toolbar">
+        <div class="chips" id="modes">
+          <button class="chip" aria-pressed="true" data-m="train"><span class="ms">train</span>Zug</button>
+          <button class="chip" aria-pressed="true" data-m="bus"><span class="ms">directions_bus</span>Bus</button>
+          <button class="chip" aria-pressed="true" data-m="tram"><span class="ms">tram</span>Tram</button>
+          <button class="chip" aria-pressed="true" data-m="ship"><span class="ms">directions_boat</span>Schiff</button>
+        </div>
+        <span class="status s-none" id="cacheTag"><span class="ms">schedule</span>Cache 60 s · vor 12 s geladen</span>
+      </div>
+      <div class="tiles" id="boardTiles"></div>
+      <div class="board" id="boardList"></div>
+      <p class="foot">Verspätungen in Minuten. Pünktlich heisst weniger als 3 Minuten. Abfahrten ohne Echtzeitdaten zählen nicht in die Statistik.</p>
+    </section>
+
+    <section id="conn" class="stack" aria-label="Verbindungen" hidden>
+      <div class="search-row">
+        <div class="tf lead"><span class="ms pre">trip_origin</span><label for="from">Von</label><input id="from" value="Bern"></div>
+        <div class="tf lead"><span class="ms pre">location_on</span><label for="to">Nach</label><input id="to" value="Zürich HB"></div>
+        <div class="tf"><label for="date">Datum</label><input type="date" id="date" value="2026-10-15"></div>
+      </div>
+      <div class="row">
+        <div class="tf" style="width:160px"><label for="time">Abfahrt ab</label><input type="time" id="time" value="10:00"></div>
+        <button class="btn filled"><span class="ms">search</span>Verbindungen suchen</button>
+        <button class="btn tonal" id="swap"><span class="ms">swap_vert</span>Tauschen</button>
+      </div>
+      <div class="row"><span class="label">Umsteigerisiko</span>
+        <span class="status s-ok"><span class="ms">check_circle</span>5 min und mehr</span>
+        <span class="status s-warn"><span class="ms">warning</span>2 bis 4 min</span>
+        <span class="status s-err"><span class="ms">error</span>höchstens 1 min</span>
+      </div>
+      <div class="stack" id="connList"></div>
+    </section>
+
+    <section id="stats" class="stack" aria-label="Statistik" hidden>
+      <div class="card stack">
+        <div><h2 id="statsTitle">Pünktlichkeit Bern</h2>
+        <p class="foot">Berechnet aus der aktuell angezeigten Abfahrtstafel.</p></div>
+        <div class="tiles" id="statTiles"></div>
+      </div>
+      <div class="card">
+        <h2>Nach Verkehrsmittel</h2>
+        <div id="modeBars" style="margin-top:8px"></div>
+      </div>
+      <div class="card outlined stack">
+        <div><h2>Berechnung geprüft</h2>
+        <p class="foot">Die Funktionen laufen hier mit festen Werten aus den Abnahmekriterien, ohne API.</p></div>
+        <div class="tbl-wrap"><table id="checkStats"></table></div>
+        <div class="tbl-wrap"><table id="checkXfer"></table></div>
+      </div>
+      <div class="card stack">
+        <h2>Einstellungen</h2>
+        <div class="search-row three">
+          <div class="tf"><label for="cacheSel">Cache-Dauer</label>
+            <select id="cacheSel"><option>30 s</option><option selected>60 s</option><option>120 s</option><option>300 s</option></select></div>
+          <div class="tf"><label for="autoSel">Auto-Aktualisierung</label>
+            <select id="autoSel"><option>aus</option><option selected>60 s</option><option>120 s</option><option>300 s</option></select></div>
+          <div style="display:flex;align-items:center"><button class="switch" id="offSw" role="switch" aria-checked="false"><span class="track"></span><span>Netz getrennt simulieren</span></button></div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+/* ---------- Berechnungen (ohne API aufrufbar) ---------- */
+const toMin = t => { const [h,m] = t.split(':').map(Number); return h*60+m; };
+const fmt = m => String(Math.floor(m/60)%24).padStart(2,'0')+':'+String(m%60).padStart(2,'0');
+function stats(delays){
+  const real = delays.filter(d => d !== null && d !== undefined);
+  const onTime = real.filter(d => d < 3).length;
+  return {
+    count: delays.length, withData: real.length, onTime,
+    share: real.length ? onTime/real.length : null,
+    avg: real.length ? real.reduce((a,b)=>a+b,0)/real.length : null,
+    max: real.length ? Math.max(...real) : null
+  };
+}
+const transferMinutes = (feederArr, feederDelay, connDep, connDelay) =>
+  toMin(connDep) + (connDelay||0) - (toMin(feederArr) + (feederDelay||0));
+const ampel = m => m >= 5 ? 'ok' : m >= 2 ? 'warn' : 'err';
+const worst = list => list.includes('err') ? 'err' : list.includes('warn') ? 'warn' : 'ok';
+
+/* ---------- Beispieldaten ---------- */
+const DEPS = [
+ ['IC','8','Zürich HB','7','10:04',0,'train'], ['S','3','Biel/Bienne','4','10:06',2,'train'],
+ ['IR','15','Luzern','9','10:09',0,'train'], ['Tram','9','Wabern','A','10:10',1,'tram'],
+ ['IC','1','Genève-Aéroport','5','10:12',3,'train'], ['Bus','10','Ostermundigen','C','10:13',0,'bus'],
+ ['S','1','Fribourg/Freiburg','6','10:15',null,'train'], ['IR','36','Basel SBB','11','10:16',4,'train'],
+ ['RE','','Neuchâtel','2','10:18',0,'train'], ['Tram','8','Saali','B','10:19',2,'tram'],
+ ['IC','6','Zürich HB','7','10:34',2,'train'], ['S','44','Thun','12','10:36','x','train'],
+ ['Bus','20','Wankdorf','D','10:37',null,'bus'], ['IR','90','Brig','3','10:38',0,'train'],
+ ['S','2','Laupen','1','10:39',1,'train'], ['Tram','7','Ostermundigen','A','10:40',5,'tram'],
+ ['IC','5','Basel SBB','8','10:42',12,'train'], ['S','51','Burgdorf','10','10:45',0,'train'],
+ ['Bus','19','Köniz','C','10:46',3,'bus'], ['IC','61','Interlaken Ost','4','10:48',0,'train']
+];
+const MODE = {train:'Zug',bus:'Bus',tram:'Tram',ship:'Schiff'};
+const MODE_ICON = {train:'train',bus:'directions_bus',tram:'tram',ship:'directions_boat'};
+const STATIONS = ['Bern','Bern Bümpliz Nord','Bern Wankdorf','Bern Wylerfeld','Bernex','Zürich HB','Zürich Flughafen','Zürich Oerlikon','Basel SBB','Luzern','Genève','Lausanne'];
+
+const CONNS = [
+ {legs:[{line:'IC 8',from:'Bern',dep:'10:04',dp:'7',dd:0,to:'Zürich HB',arr:'10:59',ap:'31',ad:0}]},
+ {legs:[{line:'IR 36',from:'Bern',dep:'10:12',dp:'11',dd:0,to:'Olten',arr:'10:46',ap:'8',ad:0},
+        {line:'IC 2',from:'Olten',dep:'10:53',dp:'12',dd:0,to:'Zürich HB',arr:'11:21',ap:'33',ad:0}]},
+ {legs:[{line:'RE 3',from:'Bern',dep:'10:15',dp:'2',dd:1,to:'Olten',arr:'10:46',ap:'9',ad:4},
+        {line:'IC 2',from:'Olten',dep:'10:53',dp:'12',dd:0,to:'Zürich HB',arr:'11:21',ap:'33',ad:0}]},
+ {legs:[{line:'IC 6',from:'Bern',dep:'10:34',dp:'7',dd:0,to:'Zürich HB',arr:'11:28',ap:'31',ad:2}]},
+ {legs:[{line:'IR 90',from:'Bern',dep:'10:42',dp:'3',dd:1,to:'Olten',arr:'11:16',ap:'8',ad:8},
+        {line:'IC 8',from:'Olten',dep:'11:23',dp:'12',dd:0,to:'Zürich HB',arr:'11:51',ap:'33',ad:0}],
+  alt:'IC 8 ab Bern 11:04, direkt, Ankunft 11:59'}
+];
+
+/* ---------- Helpers ---------- */
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const num1 = n => n.toFixed(1).replace('.',',');
+const activeModes = new Set(['train','bus','tram','ship']);
+const visible = () => DEPS.filter(d => activeModes.has(d[6]));
+const delayOf = d => (typeof d[5] === 'number') ? d[5] : null;
+
+function statusChip(d){
+  if (d[5] === 'x') return '<span class="status s-err"><span class="ms">cancel</span>Ausfall</span>';
+  if (d[5] === null) return '<span class="status s-none"><span class="ms">sensors_off</span>Keine Echtzeitdaten</span>';
+  if (d[5] < 3) return '<span class="status s-ok"><span class="ms">check_circle</span>'+(d[5]===0?'pünktlich':'+'+d[5]+' min')+'</span>';
+  if (d[5] < 6) return '<span class="status s-warn"><span class="ms">schedule</span>+'+d[5]+' min</span>';
+  return '<span class="status s-err"><span class="ms">error</span>+'+d[5]+' min</span>';
+}
+
+function renderBoard(){
+  const list = visible();
+  $('#boardList').innerHTML = list.map(d => {
+    const real = delayOf(d), est = real !== null ? fmt(toMin(d[4])+real) : null;
+    return '<div class="dep'+(d[5]==='x'?' cancelled':'')+'">'+
+      '<div class="line '+(d[6]==='train'?'train':'')+'" title="'+MODE[d[6]]+'">'+esc((d[0]+' '+d[1]).trim())+'</div>'+
+      '<div style="min-width:0"><div class="dest">'+esc(d[2])+'</div><div class="sub"><span>Gleis/Kante '+esc(d[3])+'</span>'+
+        (est && real>0 ? '<span>voraussichtlich '+est+'</span>' : '')+'</div></div>'+
+      '<div class="time"><b>'+d[4]+'</b>'+statusChip(d)+'</div></div>';
+  }).join('') || '<div class="dep"><span class="sub">Kein Verkehrsmittel gewählt.</span></div>';
+  const s = stats(list.map(delayOf));
+  $('#boardTiles').innerHTML = tilesHTML(s);
+  renderStats(s, list);
+}
+function tilesHTML(s){
+  const pct = s.share===null ? '–' : Math.round(s.share*100);
+  return '<div class="tile"><div class="label">Abfahrten</div><div class="v">'+s.count+'</div></div>'+
+    '<div class="tile accent"><div class="label">Pünktlich</div><div class="v">'+pct+'<small>%</small></div></div>'+
+    '<div class="tile"><div class="label">Ø Verspätung</div><div class="v">'+(s.avg===null?'–':num1(s.avg))+'<small>min</small></div></div>'+
+    '<div class="tile"><div class="label">Grösste</div><div class="v">'+(s.max===null?'–':s.max)+'<small>min</small></div></div>';
+}
+function renderStats(s, list){
+  $('#statTiles').innerHTML = tilesHTML(s);
+  $('#statsTitle').textContent = 'Pünktlichkeit ' + $('#station').value;
+  $('#modeBars').innerHTML = Object.keys(MODE).map(m => {
+    const l = list.filter(d => d[6]===m); if(!l.length) return '';
+    const t = stats(l.map(delayOf)), p = t.share===null?0:Math.round(t.share*100);
+    return '<div class="bar-row"><div><span class="ms" style="font-size:18px;margin-right:6px">'+MODE_ICON[m]+'</span>'+MODE[m]+'</div>'+
+      '<div class="bar" role="img" aria-label="'+p+' Prozent pünktlich"><i style="width:'+p+'%"></i></div>'+
+      '<div class="n">'+p+' % · Ø '+(t.avg===null?'–':num1(t.avg))+' min</div></div>';
+  }).join('');
+}
+
+const AMP = {
+  ok:{cls:'s-ok',icon:'check_circle',txt:'Umstieg sicher'},
+  warn:{cls:'s-warn',icon:'warning',txt:'Umstieg knapp'},
+  err:{cls:'s-err',icon:'error',txt:'Umstieg kritisch'}
+};
+function connInfo(c){
+  const legs = c.legs, xfers = [];
+  for (let i=1;i<legs.length;i++){
+    const m = transferMinutes(legs[i-1].arr, legs[i-1].ad, legs[i].dep, legs[i].dd);
+    xfers.push({m, a: ampel(m), at: legs[i].from});
+  }
+  const first = legs[0], last = legs[legs.length-1];
+  return {legs, xfers, total: worst(xfers.map(x=>x.a)), first, last, dur: toMin(last.arr)-toMin(first.dep)};
+}
+function renderConns(){
+  $('#connList').innerHTML = CONNS.map((c,i) => {
+    const x = connInfo(c), n = x.xfers.length, a = AMP[x.total], delay = x.last.ad;
+    const body = x.legs.map((l,j) =>
+      '<div class="leg"><div class="t">'+l.dep+'<span>'+(l.dd?'+'+l.dd+' min':'')+'</span></div><div class="rail"><i></i></div>'+
+        '<div class="what"><b>'+esc(l.from)+'</b> · Gleis '+esc(l.dp)+
+        '<div class="sub" style="margin-top:4px"><span class="line train" style="padding:0 8px;height:22px;font-size:12px">'+esc(l.line)+'</span></div></div></div>'+
+      '<div class="leg end"><div class="t">'+l.arr+'<span>'+(l.ad?'+'+l.ad+' min':'')+'</span></div><div class="rail"><i></i></div>'+
+        '<div class="what"><b>'+esc(l.to)+'</b> · Gleis '+esc(l.ap)+'</div></div>'+
+      (j<n ? (()=>{const t=x.xfers[j], aa=AMP[t.a];
+        return '<div class="xfer '+aa.cls+'"><span class="ms">'+aa.icon+'</span><span><b>'+(t.m<0?'Anschluss verpasst':'Umsteigezeit '+t.m+' min')+'</b> in '+esc(t.at)+(t.m<0?' ('+Math.abs(t.m)+' min zu spät)':'')+'</span></div>';})() : '')
+    ).join('');
+    const alt = x.total==='err' && c.alt ? '<div class="alt"><span class="ms">alt_route</span><span><b>Alternative:</b> '+esc(c.alt)+'</span></div>' : '';
+    return '<div class="conn" id="c'+i+'"><button class="conn-head" aria-expanded="false">'+
+      '<div><div class="conn-times">'+x.first.dep+'<span class="ms arrow">arrow_forward</span>'+x.last.arr+'</div>'+
+      '<div class="conn-meta"><span>'+Math.floor(x.dur/60)+' h '+String(x.dur%60).padStart(2,'0')+' min</span><span>'+(n===0?'direkt':n+' Umstieg'+(n>1?'e':''))+'</span><span>'+(delay>0?'Ankunft +'+delay+' min':'pünktlich')+'</span></div></div>'+
+      '<div style="display:flex;align-items:center;gap:8px"><span class="status '+a.cls+'"><span class="ms">'+a.icon+'</span>'+(n===0?'Direkt':a.txt)+'</span><span class="ms chev">expand_more</span></div></button>'+
+      '<div class="conn-body" hidden>'+body+alt+'</div></div>';
+  }).join('');
+}
+
+function renderChecks(){
+  const s = stats([0,0,2,3,10]);
+  $('#checkStats').innerHTML = '<tr><th>Verspätungen 0, 0, 2, 3, 10</th><th>Ergebnis</th></tr>'+
+    '<tr><td>Anzahl Abfahrten</td><td>'+s.count+'</td></tr>'+
+    '<tr><td>Anteil pünktlich</td><td>'+Math.round(s.share*100)+' % ('+s.onTime+' von '+s.withData+')</td></tr>'+
+    '<tr><td>Durchschnittliche Verspätung</td><td>'+num1(s.avg)+' min</td></tr>'+
+    '<tr><td>Grösste Verspätung</td><td>'+s.max+' min</td></tr>';
+  $('#checkXfer').innerHTML = '<tr><th>Verspätung Zubringer</th><th>Umsteigezeit</th><th>Ampel</th></tr>'+
+    [0,4,6,8].map(d => { const m = transferMinutes('10:00',d,'10:07',0), a=ampel(m);
+      return '<tr><td>'+d+' min</td><td>'+m+' min</td><td><span class="status '+AMP[a].cls+'">'+(a==='ok'?'Grün':a==='warn'?'Orange':(m<0?'Rot (verpasst)':'Rot'))+'</span></td></tr>'; }).join('');
+}
+
+document.querySelectorAll('.nav button').forEach(b => b.addEventListener('click', () => {
+  document.querySelectorAll('.nav button').forEach(x => x.setAttribute('aria-selected', x===b));
+  ['board','conn','stats'].forEach(id => $('#'+id).hidden = id !== b.dataset.tab);
+  window.scrollTo({top:0});
+}));
+$('#modes').addEventListener('click', e => {
+  const c = e.target.closest('.chip'); if(!c) return;
+  const on = c.getAttribute('aria-pressed') !== 'true';
+  c.setAttribute('aria-pressed', on); on ? activeModes.add(c.dataset.m) : activeModes.delete(c.dataset.m);
+  renderBoard();
+});
+$('#connList').addEventListener('click', e => {
+  const h = e.target.closest('.conn-head'); if(!h) return;
+  const card = h.parentElement, open = !card.classList.contains('open');
+  card.classList.toggle('open', open); h.setAttribute('aria-expanded', open);
+  card.querySelector('.conn-body').hidden = !open;
+});
+function openMenu(q){
+  const m = $('#menu'), l = STATIONS.filter(s => s.toLowerCase().includes(q.toLowerCase())).slice(0,5);
+  m.innerHTML = l.map(s => '<button role="option" data-s="'+esc(s)+'"><span class="ms">location_on</span>'+esc(s)+'</button>').join('');
+  m.hidden = !l.length; $('#station').setAttribute('aria-expanded', !m.hidden);
+}
+$('#station').addEventListener('input', e => openMenu(e.target.value));
+$('#station').addEventListener('focus', e => openMenu(e.target.value));
+$('#menu').addEventListener('click', e => {
+  const b = e.target.closest('button'); if(!b) return;
+  $('#station').value = b.dataset.s; $('#menu').hidden = true; renderBoard();
+});
+document.addEventListener('click', e => { if(!e.target.closest('#stationField')) $('#menu').hidden = true; });
+$('#swap').addEventListener('click', () => { const a=$('#from'), b=$('#to'); [a.value,b.value]=[b.value,a.value]; });
+$('#offSw').addEventListener('click', e => {
+  const b = e.currentTarget, on = b.getAttribute('aria-checked') !== 'true';
+  b.setAttribute('aria-checked', on); $('#offline').hidden = !on; $('#info').hidden = on;
+  $('#cacheTag').innerHTML = on ? '<span class="ms">cloud_off</span>Aus Cache · vor 3 Min' : '<span class="ms">schedule</span>Cache '+$('#cacheSel').value+' · vor 12 s geladen';
+});
+$('#cacheSel').addEventListener('change', e => { $('#cacheTag').innerHTML = '<span class="ms">schedule</span>Cache '+e.target.value+' · vor 12 s geladen'; });
+$('#refresh').addEventListener('click', () => { $('#cacheTag').innerHTML = '<span class="ms">schedule</span>Cache '+$('#cacheSel').value+' · gerade geladen'; });
+
+renderBoard(); renderConns(); renderChecks();
+$('#c2 .conn-head').click();
+</script>
+
+</body>
+</html>
